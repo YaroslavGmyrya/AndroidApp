@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:maxWidth="1080dp"
+    android:maxHeight="2400dp"
+    tools:context=".MainActivity">
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="366dp"
+        android:layout_height="379dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TableRow
+            android:id="@+id/row1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/Clear"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="#000000"
+                android:text="C"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/Mod"
+                android:layout_width="69dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black"
+                android:text="%"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/BackSpace"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"
+                android:textColorLink="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius"
+                app:icon="@android:drawable/ic_input_delete" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/div"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:gravity="center"
+                android:paddingLeft="25dp"
+                android:text="/"
+                android:textColorLink="@color/white"
+                app:iconTint="#FFFFFF" />
+        </TableRow>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TableRow
+            android:id="@+id/row2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/seven"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:text="7"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/eight"
+                android:layout_width="69dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black"
+                android:text="8"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/nine"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:text="9"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/multiplication"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:gravity="center"
+                android:text="X"
+                android:textColor="@color/white" />
+        </TableRow>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TableRow
+            android:id="@+id/row3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/four"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:text="4"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/five"
+                android:layout_width="69dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black"
+                android:text="5"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/six"
+                android:layout_width="67dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:text="6"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/minus"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:gravity="center"
+                android:text="-"
+                android:textColor="@color/white" />
+        </TableRow>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TableRow
+            android:id="@+id/row4"
+            android:layout_width="match_parent"
+            android:layout_height="156dp">
+
+            <Button
+                android:id="@+id/one"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:text="1"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/two"
+                android:layout_width="69dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black"
+                android:text="2"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/three"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:text="3"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/sum"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:gravity="center"
+                android:letterSpacing="69"
+                android:text="+"
+                android:textColor="@color/white" />
+        </TableRow>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TableRow
+            android:id="@+id/row5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/doubleZero"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:text="00"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/zero"
+                android:layout_width="69dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black"
+                android:text="0"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/dot"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:gravity="center"
+                android:text="."
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/cardview_default_radius" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/Result"
+                android:layout_width="69dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/black"
+                android:gravity="center"
+                android:letterSpacing="69"
+                android:text="="
+                android:textColor="@color/white" />
+        </TableRow>
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/prevExpression"
+        android:layout_width="289dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="48dp"
+        android:gravity="end"
+        android:textColor="@color/white"
+        android:textColorHighlight="@color/white"
+        android:textColorHint="@color/white"
+        android:textColorLink="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.803"
+        tools:text=" " />
+
+    <TextView
+        android:id="@+id/expression"
+        android:layout_width="284dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="288dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="end"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="dgdffjgjstr" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
