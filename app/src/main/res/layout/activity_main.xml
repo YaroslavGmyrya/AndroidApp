@@ -60,9 +60,6 @@
                 android:layout_width="69dp"
                 android:layout_height="match_parent"
                 android:backgroundTint="@color/black"
-                android:textColor="@color/white"
-                android:textColorLink="@color/white"
-                app:cornerRadius="@dimen/cardview_default_radius"
                 app:icon="@android:drawable/ic_input_delete" />
 
             <Space
@@ -78,8 +75,7 @@
                 android:gravity="center"
                 android:paddingLeft="25dp"
                 android:text="/"
-                android:textColorLink="@color/white"
-                app:iconTint="#FFFFFF" />
+                />
         </TableRow>
 
         <Space
@@ -354,7 +350,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.803"
-        tools:text=" " />
+        android:text=" " />
 
     <TextView
         android:id="@+id/expression"

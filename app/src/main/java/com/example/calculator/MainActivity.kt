@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         //TextView
         expression = findViewById(R.id.expression);
-        prevExpression = findViewById(R.id.expression);
+        prevExpression = findViewById(R.id.prevExpression);
 
         //operation
         sum = findViewById(R.id.sum);
@@ -139,6 +139,8 @@ class MainActivity : AppCompatActivity() {
                 val second_operand = splitExpression[2].toDoubleOrNull()
 
                 if(first_operand != null && second_operand != null){
+                    //update prevExpression TextView
+                    prevExpression.setText(expression.text);
                     //choice operand
                     when(operator){
                         "+" -> {expression.setText((first_operand + second_operand).toString())};
@@ -154,6 +156,7 @@ class MainActivity : AppCompatActivity() {
 
         Clear.setOnClickListener({
             expression.setText("");
+            prevExpression.setText("");
         })
 
         BackSpace.setOnClickListener({
