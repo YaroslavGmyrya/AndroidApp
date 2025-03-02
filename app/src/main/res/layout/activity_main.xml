@@ -361,12 +361,12 @@
         android:layout_width="284dp"
         android:layout_height="24dp"
         android:layout_marginTop="288dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="20dp"
         android:gravity="end"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="dgdffjgjstr" />
+        tools:text="" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+
+    //declaration
+
+    //TextViews
+    private lateinit var prevExpression : TextView
     private lateinit var expression : TextView
     //numbers
     private lateinit var zero : Button
@@ -38,7 +43,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var operations: Array<Button>
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,15 +53,11 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        //initialization
 
-        //field for expression
+        //TextView
         expression = findViewById(R.id.expression);
-
-        //Button for delete last char
-        BackSpace = findViewById(R.id.BackSpace);
-
-        //Button for delete whole string
-        Clear = findViewById(R.id.Clear);
+        prevExpression = findViewById(R.id.expression);
 
         //operation
         sum = findViewById(R.id.sum);
@@ -65,7 +65,6 @@ class MainActivity : AppCompatActivity() {
         div = findViewById(R.id.div);
         mod = findViewById(R.id.Mod);
         multiplication = findViewById(R.id.multiplication);
-        result = findViewById(R.id.Result);
 
         //Button with number
         zero = findViewById(R.id.zero);
@@ -93,8 +92,40 @@ class MainActivity : AppCompatActivity() {
         //otherButton
         dot = findViewById(R.id.dot);
 
+        result = findViewById(R.id.Result);
+
+        Clear = findViewById(R.id.Clear);
+
+        BackSpace = findViewById(R.id.BackSpace);
+
+
+        //arrays
+        numbers = arrayOf(zero, doubleZero, one, two, three, four, five, six, seven, eight, nine);
+
+        operations = arrayOf(sum, minus, div, mod, multiplication);
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        for(el in numbers)
+            el.setOnClickListener({
+                expression.setText(expression.text.toString() + el.text.toString());
+            })
+
+        for(el in operations)
+            el.setOnClickListener({
+                if(!expression.text.toString().isEmpty()){
+                    if(expression.text.toString().last().isDigit())
+                        expression.setText(expression.text.toString() + " " + el.text.toString() + " ");
+                }
+
+                else
+                    expression.setText(expression.text)
+            })
+
         dot.setOnClickListener({
-           val split_expression = expression.text.toString().split(" ");
+            val split_expression = expression.text.toString().split(" ");
             if(!split_expression[split_expression.size - 1].contains("."))
                 expression.setText(expression.text.toString() + ".")
         })
@@ -121,26 +152,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        numbers = arrayOf(zero, doubleZero, one, two, three, four, five, six, seven, eight, nine);
-
-        operations = arrayOf(sum, minus, div, mod, multiplication);
-
-        for(el in numbers)
-            el.setOnClickListener({
-                expression.setText(expression.text.toString() + el.text.toString());
-        })
-
-        for(el in operations)
-            el.setOnClickListener({
-                if(!expression.text.toString().isEmpty()){
-                    if(expression.text.toString().last().isDigit())
-                        expression.setText(expression.text.toString() + " " + el.text.toString() + " ");
-                }
-
-                else
-                    expression.setText(expression.text)
-            })
-
         Clear.setOnClickListener({
             expression.setText("");
         })
@@ -148,13 +159,6 @@ class MainActivity : AppCompatActivity() {
         BackSpace.setOnClickListener({
             expression.setText(expression.text.toString().dropLast(1))
         })
-
-
-
-    }
-
-    override fun onResume() {
-        super.onResume()
 
     }
 
