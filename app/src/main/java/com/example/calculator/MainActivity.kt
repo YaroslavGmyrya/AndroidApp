@@ -1,12 +1,23 @@
 package com.example.calculator
 
+import android.Manifest
+import android.app.LocaleManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.io.File
+import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,6 +53,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var numbers: Array<Button>
     private lateinit var operations: Array<Button>
 
+    //LocationManager
+    private lateinit var locationManager: LocationManager
+
+    //File
+    private lateinit var locationFile : File
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +71,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         //initialization
+
+        //LocalManager
+
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         //TextView
         expression = findViewById(R.id.expression);
@@ -108,6 +129,47 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+         val locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+
+                //get location data
+
+                val latitude = location.latitude.toString();
+                val longitude = location.longitude.toString();
+
+                //open file
+
+                locationFile = File(filesDir, "location.txt")
+
+                //write in file
+
+                locationFile.appendText("Широта: $latitude, Долгота: $longitude\n")
+                Log.d("LocationUpdate", "Широта: $latitude, Долгота: $longitude")
+
+
+            }
+             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+             override fun onProviderEnabled(provider: String) {}
+             override fun onProviderDisabled(provider: String) {}
+        }
+
+        //Check permission
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != 0 &&
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != 0) {
+            // Request permission
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
+
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener);
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener);
+        }
+
+
+
         for(el in numbers)
             el.setOnClickListener({
                 expression.setText(expression.text.toString() + el.text.toString());
@@ -131,7 +193,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         result.setOnClickListener({
-            //spliting expression on operand and operator
+            //split expression on operands and operator
             val splitExpression = expression.text.toString().split(" ");
             if(splitExpression.size == 3){
                 val first_operand = splitExpression[0].toDoubleOrNull();
@@ -166,4 +228,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+
 
