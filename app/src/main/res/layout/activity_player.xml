@@ -12,13 +12,14 @@
         android:id="@+id/MusicImage"
         android:layout_width="184dp"
         android:layout_height="196dp"
-        android:layout_marginStart="113dp"
-        android:layout_marginTop="196dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginTop="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TableRow
+        android:id="@+id/tableRow"
         android:layout_width="309dp"
         android:layout_height="49dp"
         android:layout_marginStart="26dp"
@@ -66,5 +67,21 @@
         android:max="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/MusicImage" />
+
+    <ScrollView
+        android:id="@+id/listMusic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="400dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:id="@+id/scrollableText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginLeft="10dp"
+            android:lineSpacingExtra="4dp" />
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
