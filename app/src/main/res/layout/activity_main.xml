@@ -10,6 +10,16 @@
     tools:context=".MainActivity">
 
     <ImageButton
+        android:id="@+id/HopToLocation"
+        android:layout_width="72dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="240dp"
+        android:src="@drawable/location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
         android:id="@+id/HopToPlayer"
         android:layout_width="72dp"
         android:layout_height="61dp"

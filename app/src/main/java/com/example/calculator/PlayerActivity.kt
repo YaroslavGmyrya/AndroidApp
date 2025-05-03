@@ -2,16 +2,13 @@ package com.example.calculator
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.MotionEvent
-import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -25,7 +22,6 @@ import java.io.File
 import java.util.Timer
 import java.util.TimerTask
 import kotlin.random.Random
-
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -48,6 +44,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var player: MediaPlayer;
 
     //Seek Bar
+
     private lateinit var seekBar: SeekBar;
 
     //Timer
