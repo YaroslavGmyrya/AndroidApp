@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.calculator"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation("com.google.android.gms:play-services-location:21.2.0") // "import" location from google
+    implementation("com.yandex.android:maps.mobile:4.14.0-lite") //"import" maps form yandex
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -5,16 +5,28 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:background="#070707"
     tools:context=".activities.LocationActivity">
+
+    <TextView
+        android:id="@+id/Lon_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="48dp"
+        android:text="Lon"
+        app:layout_constraintEnd_toStartOf="@+id/tv_lon"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="92dp"
         android:layout_height="18dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="100dp"
-        android:text="TextView"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:text="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_spd" />
 
@@ -22,8 +34,8 @@
         android:id="@+id/time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="29dp"
-        android:layout_marginEnd="37dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="39dp"
         android:text="Time"
         app:layout_constraintEnd_toStartOf="@+id/tv_time"
         app:layout_constraintTop_toBottomOf="@+id/spd_label2" />
@@ -32,28 +44,38 @@
         android:id="@+id/tv_spd"
         android:layout_width="92dp"
         android:layout_height="18dp"
-        android:layout_marginTop="39dp"
-        android:layout_marginEnd="100dp"
-        android:text="TextView"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:text="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_acc" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="163dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:gravity="center"
+        android:text="info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_acc2"
         android:layout_width="92dp"
         android:layout_height="18dp"
-        android:layout_marginTop="452dp"
-        android:layout_marginEnd="108dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_alt" />
+        tools:layout_editor_absoluteX="306dp"
+        tools:layout_editor_absoluteY="653dp" />
 
     <TextView
         android:id="@+id/spd_label2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="37dp"
-        android:layout_marginEnd="45dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="47dp"
         android:text="Spd"
         app:layout_constraintEnd_toStartOf="@+id/tv_spd"
         app:layout_constraintTop_toBottomOf="@+id/acc_label" />
@@ -62,9 +84,10 @@
         android:id="@+id/tv_acc"
         android:layout_width="92dp"
         android:layout_height="18dp"
-        android:layout_marginTop="33dp"
-        android:layout_marginEnd="100dp"
-        android:text="TextView"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:text="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_alt" />
 
@@ -72,8 +95,8 @@
         android:id="@+id/acc_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="45dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="48dp"
         android:text="Acc"
         app:layout_constraintEnd_toStartOf="@+id/tv_acc"
         app:layout_constraintTop_toBottomOf="@+id/alt_label" />
@@ -82,8 +105,8 @@
         android:id="@+id/alt_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="37dp"
-        android:layout_marginEnd="52dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="54dp"
         android:text="Alt"
         app:layout_constraintEnd_toStartOf="@+id/tv_alt"
         app:layout_constraintTop_toBottomOf="@+id/Lat_label" />
@@ -92,49 +115,21 @@
         android:id="@+id/tv_alt"
         android:layout_width="92dp"
         android:layout_height="18dp"
-        android:layout_marginTop="92dp"
-        android:layout_marginEnd="100dp"
-        android:text="TextView"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:text="0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_lon" />
-
-    <TextView
-        android:id="@+id/Lon_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="48dp"
-        android:text="Lon"
-        app:layout_constraintEnd_toStartOf="@+id/tv_lon"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="163dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginEnd="100dp"
-        android:text="info about youre location:"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_lon"
-        android:layout_width="92dp"
-        android:layout_height="19dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="100dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_lat" />
 
     <TextView
         android:id="@+id/tv_lat"
         android:layout_width="92dp"
         android:layout_height="18dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="100dp"
-        android:text="TextView"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:text="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_lon" />
 
@@ -142,9 +137,21 @@
         android:id="@+id/Lat_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="51dp"
         android:text="Lat"
         app:layout_constraintEnd_toStartOf="@+id/tv_lat"
         app:layout_constraintTop_toBottomOf="@+id/Lon_label" />
+
+    <TextView
+        android:id="@+id/tv_lon"
+        android:layout_width="92dp"
+        android:layout_height="19dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
