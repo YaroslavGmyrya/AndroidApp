@@ -9,7 +9,6 @@
     android:background="#EFE3E3"
     tools:context=".activities.LocationActivity">
 
-
     <com.yandex.mapkit.mapview.MapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
@@ -21,201 +20,421 @@
     </com.yandex.mapkit.mapview.MapView>
 
     <TextView
-        android:id="@+id/SignalLvl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:text="Unknown"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SignalLvlLabel" />
-
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_width="92dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="5dp"
-        android:gravity="center"
-        android:text="0"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_spd" />
-
-    <TextView
-        android:id="@+id/signal_type_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="105dp"
-        android:gravity="center"
-        android:text="Signal Type"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_label" />
-
-    <TextView
-        android:id="@+id/Lon_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="48dp"
-        android:text="Lon"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/tv_lon"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <TextView
-        android:id="@+id/time_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="39dp"
-        android:text="Time"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/tv_time"
-        app:layout_constraintTop_toBottomOf="@+id/spd_label2" />
-
-    <TextView
-        android:id="@+id/tv_spd"
-        android:layout_width="92dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="5dp"
-        android:gravity="center"
-        android:text="0"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_acc" />
-
-    <TextView
         android:id="@+id/textView2"
-        android:layout_width="163dp"
+        android:layout_width="200dp"
         android:layout_height="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
         android:gravity="center"
         android:text="info"
         android:textColor="@color/black"
+        tools:layout_editor_absoluteX="210dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <TableLayout
+        android:id="@+id/InfoTable"
+        android:layout_width="200dp"
+        android:layout_height="160dp"
+        android:layout_marginEnd="1dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-    <TextView
-        android:id="@+id/spd_label2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginEnd="47dp"
-        android:text="Spd"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/tv_spd"
-        app:layout_constraintTop_toBottomOf="@+id/acc_label" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
 
-    <TextView
-        android:id="@+id/tv_acc"
-        android:layout_width="92dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="5dp"
-        android:gravity="center"
-        android:text="0"
-        android:textColor="@color/black"
+            <TextView
+                android:id="@+id/Lon_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lon"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="240dp"
+                tools:layout_editor_absoluteY="66dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_lon"
+                android:layout_width="92dp"
+                android:layout_height="19dp"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="314dp"
+                tools:layout_editor_absoluteY="53dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/Lat_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lat"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="243dp"
+                tools:layout_editor_absoluteY="96dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_lat"
+                android:layout_width="92dp"
+                android:layout_height="18dp"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="314dp"
+                tools:layout_editor_absoluteY="85dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/alt_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alt"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="243dp"
+                tools:layout_editor_absoluteY="127dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_alt"
+                android:layout_width="92dp"
+                android:layout_height="18dp"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="314dp"
+                tools:layout_editor_absoluteY="117dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/acc_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Acc"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="243dp"
+                tools:layout_editor_absoluteY="162dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_acc"
+                android:layout_width="92dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="314dp"
+                tools:layout_editor_absoluteY="151dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/spd_label2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Spd"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="243dp"
+                tools:layout_editor_absoluteY="195dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_spd"
+                android:layout_width="92dp"
+                android:layout_height="18dp"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="314dp"
+                tools:layout_editor_absoluteY="184dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="244dp"
+                tools:layout_editor_absoluteY="224dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="92dp"
+                android:layout_height="18dp"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/black"
+                tools:layout_editor_absoluteX="314dp"
+                tools:layout_editor_absoluteY="214dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/signal_type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Signal Type"
+                android:textColor="#000000"
+                tools:layout_editor_absoluteX="234dp"
+                tools:layout_editor_absoluteY="255dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_signalType"
+                android:layout_width="62dp"
+                android:layout_height="18dp"
+                android:gravity="center"
+                android:text="Unknown"
+                android:textColor="#000000"
+                tools:layout_editor_absoluteX="237dp"
+                tools:layout_editor_absoluteY="286dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/SignalLvlLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Signal Level"
+                android:textColor="#000000"
+                tools:layout_editor_absoluteX="325dp"
+                tools:layout_editor_absoluteY="245dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/SignalLvl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Unknown"
+                android:textColor="#000000"
+                tools:layout_editor_absoluteX="338dp"
+                tools:layout_editor_absoluteY="275dp" />
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:id="@+id/ColorsTable"
+        android:layout_width="129dp"
+        android:layout_height="148dp"
+        android:layout_marginTop="329dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_alt" />
+        app:layout_constraintTop_toBottomOf="@+id/InfoTable">
 
-    <TextView
-        android:id="@+id/acc_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="48dp"
-        android:text="Acc"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/tv_acc"
-        app:layout_constraintTop_toBottomOf="@+id/alt_label" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
 
-    <TextView
-        android:id="@+id/alt_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="54dp"
-        android:text="Alt"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/tv_alt"
-        app:layout_constraintTop_toBottomOf="@+id/Lat_label" />
+            <View
+                android:id="@+id/colorSquare5"
+                android:layout_width="16dp"
+                android:layout_height="14dp"
+                android:layout_margin="8dp"
+                android:background="@color/my_green"
+                android:elevation="4dp"
+                android:outlineProvider="none"
+                tools:layout_editor_absoluteX="266dp"
+                tools:layout_editor_absoluteY="614dp" />
 
-    <TextView
-        android:id="@+id/tv_alt"
-        android:layout_width="92dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginEnd="5dp"
-        android:gravity="center"
-        android:text="0"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_lat" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/tv_lat"
-        android:layout_width="92dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="5dp"
-        android:gravity="center"
-        android:text="0"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_lon" />
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Great"
+                android:textColor="#000000" />
+        </TableRow>
 
-    <TextView
-        android:id="@+id/Lat_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="51dp"
-        android:text="Lat"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/tv_lat"
-        app:layout_constraintTop_toBottomOf="@+id/Lon_label" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
 
-    <TextView
-        android:id="@+id/tv_lon"
-        android:layout_width="92dp"
-        android:layout_height="19dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="5dp"
-        android:gravity="center"
-        android:text="0"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            <View
+                android:id="@+id/colorSquare"
+                android:layout_width="16dp"
+                android:layout_height="14dp"
+                android:layout_margin="8dp"
+                android:background="@color/my_yellow"
+                android:elevation="4dp"
+                tools:layout_editor_absoluteX="266dp"
+                tools:layout_editor_absoluteY="614dp" />
 
-    <TextView
-        android:id="@+id/SignalType"
-        android:layout_width="62dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="112dp"
-        android:gravity="center"
-        android:text="Unknown"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signal_type_label" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/SignalLvlLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="11dp"
-        android:gravity="center"
-        android:text="Signal Level"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_time" />
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Good"
+                android:textColor="#000000" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <View
+                android:id="@+id/colorSquare2"
+                android:layout_width="16dp"
+                android:layout_height="14dp"
+                android:layout_margin="8dp"
+                android:background="@color/my_orange"
+                android:elevation="4dp"
+                tools:layout_editor_absoluteX="266dp"
+                tools:layout_editor_absoluteY="614dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="No good"
+                android:textColor="#000000" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <View
+                android:id="@+id/colorSquare3"
+                android:layout_width="16dp"
+                android:layout_height="14dp"
+                android:layout_margin="8dp"
+                android:background="#FF0101"
+                android:elevation="4dp"
+                tools:layout_editor_absoluteX="266dp"
+                tools:layout_editor_absoluteY="614dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Bad"
+                android:textColor="#000000" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <View
+                android:id="@+id/colorSquare4"
+                android:layout_width="16dp"
+                android:layout_height="14dp"
+                android:layout_margin="8dp"
+                android:background="@color/black"
+                android:elevation="4dp"
+                tools:layout_editor_absoluteX="266dp"
+                tools:layout_editor_absoluteY="614dp" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="No signal"
+                android:textColor="#000000" />
+        </TableRow>
+    </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

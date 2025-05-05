@@ -3,7 +3,6 @@ package com.example.calculator
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.mapview.MapView
 import android.Manifest
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -22,7 +21,6 @@ import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
@@ -60,8 +58,8 @@ class LocationActivity : AppCompatActivity() {
     private lateinit var tvTime: TextView
 
     //info about signal
-    private lateinit var SignalType: TextView
-    private lateinit var SignalLvl: TextView
+    private lateinit var tvSignalType: TextView
+    private lateinit var tvSignalLvl: TextView
 
 
     //file for info about location
@@ -116,11 +114,11 @@ class LocationActivity : AppCompatActivity() {
 
     //map for translate code signal lvl to string
     val signal_level = mapOf(
-        0 to "no signal",
-        1 to "bad",
-        2 to "no good",
-        3 to "good",
-        4 to "great"
+        0 to "No signal",
+        1 to "Bad",
+        2 to "No good",
+        3 to "Good",
+        4 to "Great"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,33 +138,6 @@ class LocationActivity : AppCompatActivity() {
         mapView = findViewById(R.id.mapview)
         polylineMapObject = mapView.map.mapObjects.addPolyline(Polyline(emptyList()))
 
-        //move camera on start pos
-        mapView.map.move(
-            CameraPosition(Point(52.9885448, 78.6487029), 12f, 0f, 0f),
-            Animation(Animation.Type.SMOOTH, 1f),
-            null
-        )
-
-        //check permission on write in storage
-        val requestPermissionLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted ->
-            if (isGranted) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(this, "Please grant permission", Toast.LENGTH_LONG).show()
-            }
-        }
-
-        //request permission
-        requestPermissionLauncher.launch(WRITE_EXTERNAL_STORAGE)
-
-        //check permission on Phone state
-        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            //request permission
-            requestPermissionLauncher.launch(Manifest.permission.READ_PHONE_STATE)
-        }
-
         //init variables
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         tvLat = findViewById(R.id.tv_lat)
@@ -175,21 +146,20 @@ class LocationActivity : AppCompatActivity() {
         tvAcc = findViewById(R.id.tv_acc)
         tvSpd = findViewById(R.id.tv_spd)
         tvTime = findViewById(R.id.tv_time)
-        SignalLvl = findViewById(R.id.SignalLvl)
-        SignalType = findViewById(R.id.SignalType)
+        tvSignalLvl = findViewById(R.id.SignalLvl)
+        tvSignalType = findViewById(R.id.tv_signalType)
 
         file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "info.txt")
 
         //clear file with prev info about location
         file.writeText("")
 
-        createLocationRequest()
-        createLocationCallback()
-
         //service for get info about signal
         TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        Log.w(LOG_TAG, TelephonyManager.networkType.toString())
+        createLocationRequest()
+        createLocationCallback()
+
     }
 
     override fun onStart() {
@@ -253,7 +223,7 @@ class LocationActivity : AppCompatActivity() {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             smallestDisplacement = 0.1f
             maxWaitTime = 0
-                isWaitForAccurateLocation = true
+            isWaitForAccurateLocation = true
         }
     }
 
@@ -272,8 +242,17 @@ class LocationActivity : AppCompatActivity() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ResourceAsColor")
     private fun updateLocation(location: Location) {
+        //move camera om first point
+        if(points.isEmpty()){
+            mapView.map.move(
+                CameraPosition(Point(location.latitude, location.longitude), 16f, 0f, 0f),
+                Animation(Animation.Type.SMOOTH, 1f),
+                null
+            )
+        }
+
         //get network type
         val network_type = if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) !=
             PackageManager.PERMISSION_GRANTED) {
@@ -291,11 +270,8 @@ class LocationActivity : AppCompatActivity() {
         tvAcc.text = location.accuracy.toString()
         tvSpd.text = location.speed.toString()
         tvTime.text = location.time.toString()
-        SignalLvl.text = signal_lvl
-        SignalType.text = network_type
-
-        if(location.speed <= 0.5f || location.accuracy >= 10)
-            return
+        tvSignalLvl.text = signal_lvl
+        tvSignalType.text = network_type
 
         //create current_point
         val tmpPoint = Point(location.latitude, location.longitude)
@@ -303,37 +279,29 @@ class LocationActivity : AppCompatActivity() {
         //add current point to points
         points.add(tmpPoint)
 
-        if (points.size >= 2) {
-            //get last 2 point to create line
-            val lastTwoPoints = listOf(points[points.size - 2], points[points.size - 1])
-
-            val mapObjects = mapView.map.mapObjects
-
-            //get current color
-            val currentColor = when(signal_lvl) {
-                "great" -> ContextCompat.getColor(this, R.color.my_green)
-                "good" -> ContextCompat.getColor(this, R.color.my_yellow)
-                "no good" -> ContextCompat.getColor(this, R.color.my_orange)
-                "bad" -> ContextCompat.getColor(this, R.color.my_red)
-                else -> ContextCompat.getColor(this, R.color.my_black)
-            }
-
-            //set parameter to new line
-            mapObjects.addPolyline(Polyline(lastTwoPoints)).apply {
-                strokeWidth = 1f
-                setStrokeColor(currentColor)
-                gradientLength = 1f
-                outlineColor = ContextCompat.getColor(this@LocationActivity, R.color.black)
-                outlineWidth = 2f
-            }
-
-            // move camera on current point
-            mapView.map.move(
-                CameraPosition(tmpPoint, mapView.map.cameraPosition.zoom, 0f, 0f),
-                Animation(Animation.Type.SMOOTH, 0.5f),
-                null
-            )
+        //get current color
+        val currentColor = when(signal_lvl) {
+            "Great" -> ContextCompat.getColor(this, R.color.my_green)
+            "Good" -> ContextCompat.getColor(this, R.color.my_yellow)
+            "No good" -> ContextCompat.getColor(this, R.color.my_orange)
+            "Bad" -> ContextCompat.getColor(this, R.color.my_red)
+            else -> ContextCompat.getColor(this, R.color.my_black)
         }
+
+        //set color for SignalLvl
+        tvSignalLvl.setTextColor(currentColor)
+
+        //if invalid value - set red text
+        if(location.speed <= 0.5f || location.accuracy >= 10f){
+            if(location.speed <= 0.5f)
+                tvSpd.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.my_red))
+            else
+                tvAcc.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.my_red))
+            return
+        }
+        //if valid value - set default (black) text
+        tvSpd.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.black))
+        tvAcc.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.black))
 
         // create object info
         val tmp = info(
@@ -355,13 +323,39 @@ class LocationActivity : AppCompatActivity() {
 
         //add to file
         file.appendText(gson.toJson(tmp))
+
+        //build line
+        if (points.size >= 2) {
+            //get last 2 point to create line
+            val lastTwoPoints = listOf(points[points.size - 2], points[points.size - 1])
+
+            val mapObjects = mapView.map.mapObjects
+
+            //set parameter to new line
+            mapObjects.addPolyline(Polyline(lastTwoPoints)).apply {
+                strokeWidth = 1f
+                setStrokeColor(currentColor)
+                gradientLength = 1f
+                outlineColor = ContextCompat.getColor(this@LocationActivity, R.color.black)
+                outlineWidth = 2f
+            }
+
+            // move camera on current point
+            mapView.map.move(
+                CameraPosition(tmpPoint, mapView.map.cameraPosition.zoom, 0f, 0f),
+                Animation(Animation.Type.SMOOTH, 0.5f),
+                null
+            )
+        }
     }
 
     //functions for check permission
 
     private fun checkPermissions(): Boolean {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermissions() {
@@ -370,7 +364,9 @@ class LocationActivity : AppCompatActivity() {
             this,
             arrayOf(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_PHONE_STATE
             ),
             PERMISSION_REQUEST_ACCESS_LOCATION
         )
