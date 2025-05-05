@@ -6,18 +6,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="#070707"
+    android:background="#EFE3E3"
     tools:context=".activities.LocationActivity">
 
+
+    <com.yandex.mapkit.mapview.MapView
+        android:id="@+id/mapview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </com.yandex.mapkit.mapview.MapView>
+
     <TextView
-        android:id="@+id/Lon_label"
+        android:id="@+id/SignalLvl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="48dp"
-        android:text="Lon"
-        app:layout_constraintEnd_toStartOf="@+id/tv_lon"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:text="Unknown"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SignalLvlLabel" />
 
     <TextView
         android:id="@+id/tv_time"
@@ -27,8 +40,32 @@
         android:layout_marginEnd="5dp"
         android:gravity="center"
         android:text="0"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_spd" />
+
+    <TextView
+        android:id="@+id/signal_type_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="105dp"
+        android:gravity="center"
+        android:text="Signal Type"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_label" />
+
+    <TextView
+        android:id="@+id/Lon_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="48dp"
+        android:text="Lon"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/tv_lon"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/time_label"
@@ -37,6 +74,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="39dp"
         android:text="Time"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/tv_time"
         app:layout_constraintTop_toBottomOf="@+id/spd_label2" />
 
@@ -48,6 +86,7 @@
         android:layout_marginEnd="5dp"
         android:gravity="center"
         android:text="0"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_acc" />
 
@@ -59,16 +98,9 @@
         android:layout_marginEnd="4dp"
         android:gravity="center"
         android:text="info"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_acc2"
-        android:layout_width="92dp"
-        android:layout_height="18dp"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="306dp"
-        tools:layout_editor_absoluteY="653dp" />
 
     <TextView
         android:id="@+id/spd_label2"
@@ -77,6 +109,7 @@
         android:layout_marginTop="14dp"
         android:layout_marginEnd="47dp"
         android:text="Spd"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/tv_spd"
         app:layout_constraintTop_toBottomOf="@+id/acc_label" />
 
@@ -88,6 +121,7 @@
         android:layout_marginEnd="5dp"
         android:gravity="center"
         android:text="0"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_alt" />
 
@@ -98,6 +132,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="48dp"
         android:text="Acc"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/tv_acc"
         app:layout_constraintTop_toBottomOf="@+id/alt_label" />
 
@@ -108,6 +143,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="54dp"
         android:text="Alt"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/tv_alt"
         app:layout_constraintTop_toBottomOf="@+id/Lat_label" />
 
@@ -119,6 +155,7 @@
         android:layout_marginEnd="5dp"
         android:gravity="center"
         android:text="0"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_lat" />
 
@@ -130,6 +167,7 @@
         android:layout_marginEnd="5dp"
         android:gravity="center"
         android:text="0"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_lon" />
 
@@ -140,6 +178,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="51dp"
         android:text="Lat"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/tv_lat"
         app:layout_constraintTop_toBottomOf="@+id/Lon_label" />
 
@@ -151,7 +190,32 @@
         android:layout_marginEnd="5dp"
         android:gravity="center"
         android:text="0"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/SignalType"
+        android:layout_width="62dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="112dp"
+        android:gravity="center"
+        android:text="Unknown"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signal_type_label" />
+
+    <TextView
+        android:id="@+id/SignalLvlLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="11dp"
+        android:gravity="center"
+        android:text="Signal Level"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_time" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
