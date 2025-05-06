@@ -4,13 +4,14 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.mapview.MapView
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Looper
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -18,16 +19,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Environment
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.versionedparcelable.VersionedParcelize
-import com.google.android.gms.location.*
 import com.google.gson.GsonBuilder
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.geometry.Point
@@ -35,7 +36,6 @@ import com.yandex.mapkit.geometry.Polyline
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.PolylineMapObject
 import java.io.File
-import com.example.calculator.LocationService
 
 class LocationActivity : AppCompatActivity() {
 
@@ -123,6 +123,8 @@ class LocationActivity : AppCompatActivity() {
         4 to "Great"
     )
 
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         //set API key from Yandex
         MapKitFactory.setApiKey("8f06c755-f950-4726-a6e0-0a39a2ab4b33")
@@ -313,11 +315,8 @@ class LocationActivity : AppCompatActivity() {
 
             //set parameter to new line
             mapObjects.addPolyline(Polyline(lastTwoPoints)).apply {
-                strokeWidth = 1f
+                strokeWidth = 2f
                 setStrokeColor(currentColor)
-                gradientLength = 1f
-                outlineColor = ContextCompat.getColor(this@LocationActivity, R.color.black)
-                outlineWidth = 2f
             }
 
             // move camera on current point
