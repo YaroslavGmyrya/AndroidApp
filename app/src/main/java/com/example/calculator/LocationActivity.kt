@@ -4,8 +4,10 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.mapview.MapView
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
@@ -23,6 +25,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.versionedparcelable.VersionedParcelize
 import com.google.android.gms.location.*
 import com.google.gson.GsonBuilder
 import com.yandex.mapkit.Animation
@@ -30,8 +34,8 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.geometry.Polyline
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.PolylineMapObject
-
 import java.io.File
+import com.example.calculator.LocationService
 
 class LocationActivity : AppCompatActivity() {
 
@@ -43,11 +47,6 @@ class LocationActivity : AppCompatActivity() {
     }
 
     //define variables
-
-    //location
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationCallback: LocationCallback
-    private lateinit var locationRequest: LocationRequest
 
     //textview for info about current location
     private lateinit var tvLat: TextView
@@ -75,7 +74,10 @@ class LocationActivity : AppCompatActivity() {
     //service for get info about signal quality
     private lateinit var TelephonyManager : TelephonyManager
 
-    //class location info
+    //my service
+    private lateinit var locationService : Intent
+
+    //all info
     data class info(
         val latitude: Double,
         val longitude: Double,
@@ -134,12 +136,13 @@ class LocationActivity : AppCompatActivity() {
             insets
         }
 
-        //init map and polyline
+        //init variables
+
+        //map and polyline
         mapView = findViewById(R.id.mapview)
         polylineMapObject = mapView.map.mapObjects.addPolyline(Polyline(emptyList()))
 
-        //init variables
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        //TextView
         tvLat = findViewById(R.id.tv_lat)
         tvLon = findViewById(R.id.tv_lon)
         tvAlt = findViewById(R.id.tv_alt)
@@ -149,6 +152,7 @@ class LocationActivity : AppCompatActivity() {
         tvSignalLvl = findViewById(R.id.SignalLvl)
         tvSignalType = findViewById(R.id.tv_signalType)
 
+        //file
         file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "info.txt")
 
         //clear file with prev info about location
@@ -157,30 +161,18 @@ class LocationActivity : AppCompatActivity() {
         //service for get info about signal
         TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        createLocationRequest()
-        createLocationCallback()
+        //service for get location
+        locationService = Intent(this, LocationService::class.java)
+
+        //register receiver
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(locationReceiver, IntentFilter(LocationService.BROADCAST_ACTION))
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        MapKitFactory.getInstance().onStart() //start lifecycle mapkit
-        mapView.onStart()
-    }
-
+    //start lifecycle mapkit, update location, location service
     override fun onResume() {
         super.onResume()
-        startLocationUpdates()
-    }
-
-    override fun onStop() {
-        mapView.onStop()
-        MapKitFactory.getInstance().onStop() //end lifecycle mapkit
-        super.onStop()
-    }
-
-    //check permission and start updates
-    private fun startLocationUpdates() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 if (ActivityCompat.checkSelfPermission(
@@ -194,47 +186,43 @@ class LocationActivity : AppCompatActivity() {
                     requestPermissions()
                     return
                 }
-                fusedLocationClient.requestLocationUpdates(
-                    locationRequest,
-                    locationCallback,
-                    Looper.getMainLooper()
-                )
+
+                startForegroundService(locationService)
+
             } else {
                 Toast.makeText(applicationContext, "Enable location in settings", Toast.LENGTH_SHORT).show()
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             }
         } else {
-            Log.w(LOG_TAG, "location permission is not allowed")
             requestPermissions()
         }
+
+        MapKitFactory.getInstance().onStart()
+        mapView.onStart()
     }
 
-    //set param for request
-    private fun createLocationRequest() {
-            locationRequest = LocationRequest.create().apply {
-            interval = 0
-            fastestInterval = 0
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            smallestDisplacement = 0.1f
-            maxWaitTime = 0
-            isWaitForAccurateLocation = true
-        }
-    }
-
-    //update location
-    private fun createLocationCallback() {
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                locationResult.lastLocation?.let { location ->
-                    updateLocation(location)
-                }
+    private val locationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val location = intent?.getParcelableExtra<Location>("location")
+            location?.let {
+                Log.w(LOG_TAG, location.toString())
+                updateLocation(location)
             }
         }
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(locationService)
+        mapView.onStop()
+        MapKitFactory.getInstance().onStop() //end lifecycle mapkit
+    }
+
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     private fun updateLocation(location: Location) {
+
         //move camera om first point
         if(points.isEmpty()){
             mapView.map.move(
@@ -358,7 +346,7 @@ class LocationActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_PHONE_STATE
+                Manifest.permission.READ_PHONE_STATE,
             ),
             PERMISSION_REQUEST_ACCESS_LOCATION
         )
@@ -373,7 +361,6 @@ class LocationActivity : AppCompatActivity() {
         if (requestCode == PERMISSION_REQUEST_ACCESS_LOCATION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(applicationContext, "Permission granted", Toast.LENGTH_SHORT).show()
-                startLocationUpdates()
             } else {
                 Toast.makeText(applicationContext, "Denied by user", Toast.LENGTH_SHORT).show()
             }
