@@ -333,11 +333,8 @@ class LocationActivity : AppCompatActivity() {
 
             //set parameter to new line
             mapObjects.addPolyline(Polyline(lastTwoPoints)).apply {
-                strokeWidth = 1f
+                strokeWidth = 2f
                 setStrokeColor(currentColor)
-                gradientLength = 1f
-                outlineColor = ContextCompat.getColor(this@LocationActivity, R.color.black)
-                outlineWidth = 2f
             }
 
             // move camera on current point
