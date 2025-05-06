@@ -173,11 +173,6 @@ class LocationActivity : AppCompatActivity() {
         startLocationUpdates()
     }
 
-    override fun onPause() {
-        super.onPause()
-        stopLocationUpdates()
-    }
-
     override fun onStop() {
         mapView.onStop()
         MapKitFactory.getInstance().onStop() //end lifecycle mapkit
@@ -238,10 +233,6 @@ class LocationActivity : AppCompatActivity() {
         }
     }
 
-    private fun stopLocationUpdates() {
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-    }
-
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     private fun updateLocation(location: Location) {
         //move camera om first point
@@ -299,6 +290,7 @@ class LocationActivity : AppCompatActivity() {
                 tvAcc.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.my_red))
             return
         }
+
         //if valid value - set default (black) text
         tvSpd.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.black))
         tvAcc.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.black))
