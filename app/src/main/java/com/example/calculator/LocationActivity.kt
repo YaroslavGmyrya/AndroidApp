@@ -4,8 +4,10 @@ import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.mapview.MapView
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
@@ -16,13 +18,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import com.google.gson.GsonBuilder
 import com.yandex.mapkit.Animation
@@ -33,6 +39,8 @@ import com.yandex.mapkit.map.PolylineMapObject
 
 import java.io.File
 
+import com.example.calculator.LocationService
+
 class LocationActivity : AppCompatActivity() {
 
     val value: Int = 0
@@ -40,6 +48,8 @@ class LocationActivity : AppCompatActivity() {
 
     companion object {
         private const val PERMISSION_REQUEST_ACCESS_LOCATION = 100
+        private const val PERMISSION_REQUEST_FOREGROUND_LOCATION = 100
+        private const val PERMISSION_REQUEST_BACKGROUND_LOCATION = 101
     }
 
     //define variables
@@ -74,6 +84,12 @@ class LocationActivity : AppCompatActivity() {
 
     //service for get info about signal quality
     private lateinit var TelephonyManager : TelephonyManager
+
+    //service for location
+    private lateinit var locationService : Intent
+
+    //other
+    private var isForeground : Boolean = true
 
     //class location info
     data class info(
@@ -157,31 +173,58 @@ class LocationActivity : AppCompatActivity() {
         //service for get info about signal
         TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
+        //service for get location
+        locationService = Intent(this, LocationService::class.java)
+
+
+        registerReceiver(locationReceiver, IntentFilter(LocationService.BROADCAST_ACTION))
+
+
         createLocationRequest()
         createLocationCallback()
 
     }
 
+    //if foreground - get location from activity
     override fun onStart() {
         super.onStart()
         MapKitFactory.getInstance().onStart() //start lifecycle mapkit
         mapView.onStart()
+        isForeground = true
+        stopService(locationService)
+
     }
 
     override fun onResume() {
         super.onResume()
-        startLocationUpdates()
+        if(isForeground)
+            startLocationUpdates()
+        else
+            stopLocationUpdates()
     }
 
-    override fun onPause() {
-        super.onPause()
-        stopLocationUpdates()
-    }
-
+    //if background - get location from service
     override fun onStop() {
+        super.onStop()
+        isForeground = false
+        startForegroundService(locationService)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         mapView.onStop()
         MapKitFactory.getInstance().onStop() //end lifecycle mapkit
-        super.onStop()
+    }
+
+    //receiver from service
+    private val locationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val location = intent?.getParcelableExtra<Location>("location")
+            location?.let {
+                Log.w(LOG_TAG, location.toString())
+                updateLocation(location)
+            }
+        }
     }
 
     //check permission and start updates
@@ -333,7 +376,7 @@ class LocationActivity : AppCompatActivity() {
 
             //set parameter to new line
             mapObjects.addPolyline(Polyline(lastTwoPoints)).apply {
-                strokeWidth = 2f
+                strokeWidth = 5f
                 setStrokeColor(currentColor)
             }
 
@@ -349,44 +392,62 @@ class LocationActivity : AppCompatActivity() {
     //functions for check permission
 
     private fun checkPermissions(): Boolean {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
+        } else {
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        }
     }
 
     private fun requestPermissions() {
-        Log.w(LOG_TAG, "requestPermissions()")
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_PHONE_STATE
-            ),
-            PERMISSION_REQUEST_ACCESS_LOCATION
-        )
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_ACCESS_LOCATION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(applicationContext, "Permission granted", Toast.LENGTH_SHORT).show()
-                startLocationUpdates()
-            } else {
-                Toast.makeText(applicationContext, "Denied by user", Toast.LENGTH_SHORT).show()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    PERMISSION_REQUEST_FOREGROUND_LOCATION
+                )
             }
+            else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                    PERMISSION_REQUEST_BACKGROUND_LOCATION
+                )
+            }
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSION_REQUEST_FOREGROUND_LOCATION
+            )
         }
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_REQUEST_FOREGROUND_LOCATION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        requestPermissions()
+                    } else {
+                        startLocationUpdates()
+                    }
+                }
+            }
+            PERMISSION_REQUEST_BACKGROUND_LOCATION -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startLocationUpdates()
+                }
+                }
+            }
+        }
 
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
-}
+
+    }
