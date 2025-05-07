@@ -33,7 +33,7 @@ class LocationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startLocationUpdates()
-        return START_REDELIVER_INTENT
+        return START_STICKY
     }
 
     private fun createNotificationChannel() {
@@ -71,6 +71,7 @@ class LocationService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let { location ->
+                    Log.w(LOG_TAG, "SEND LOCATION TO ACTIVITY")
                     sendLocationToActivity(location)
                 }
             }
