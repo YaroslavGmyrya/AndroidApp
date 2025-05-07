@@ -210,21 +210,12 @@ class LocationActivity : AppCompatActivity() {
         startForegroundService(locationService)
     }
 
+    //end lifecycle mapkit and stop fg service
     override fun onDestroy() {
         super.onDestroy()
         mapView.onStop()
-        MapKitFactory.getInstance().onStop() //end lifecycle mapkit
-    }
-
-    //receiver from service
-    private val locationReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val location = intent?.getParcelableExtra<Location>("location")
-            location?.let {
-                Log.w(LOG_TAG, location.toString())
-                updateLocation(location)
-            }
-        }
+        MapKitFactory.getInstance().onStop()
+        stopService(locationService)
     }
 
     //check permission and start updates
@@ -389,23 +380,35 @@ class LocationActivity : AppCompatActivity() {
         }
     }
 
-    //functions for check permission
-
-    private fun checkPermissions(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
-        } else {
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    //receiver from service
+    private val locationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val location = intent?.getParcelableExtra<Location>("location")
+            location?.let {
+                Log.w(LOG_TAG, location.toString())
+                updateLocation(location)
+            }
         }
     }
 
+    //functions for check permission
+
+    private fun checkPermissions(): Boolean {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
+    }
+
     private fun requestPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_PHONE_STATE,),
                     PERMISSION_REQUEST_FOREGROUND_LOCATION
                 )
             }
@@ -416,25 +419,14 @@ class LocationActivity : AppCompatActivity() {
                     PERMISSION_REQUEST_BACKGROUND_LOCATION
                 )
             }
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSION_REQUEST_FOREGROUND_LOCATION
-            )
         }
-    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PERMISSION_REQUEST_FOREGROUND_LOCATION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        requestPermissions()
-                    } else {
-                        startLocationUpdates()
-                    }
+                    requestPermissions()
                 }
             }
             PERMISSION_REQUEST_BACKGROUND_LOCATION -> {
