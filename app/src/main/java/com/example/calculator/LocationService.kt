@@ -71,17 +71,17 @@ class LocationService : Service() {
         locationRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             LocationRequest.Builder(
                 Priority.PRIORITY_HIGH_ACCURACY,
-                1000 // 1 секунда
+                1000
             ).apply {
-                setMinUpdateIntervalMillis(500) // Минимальный интервал
+                setMinUpdateIntervalMillis(500)
                 setWaitForAccurateLocation(false)
             }.build()
         } else {
             LocationRequest.create().apply {
-                interval = 1000 // 1 секунда
-                fastestInterval = 500 // 0.5 секунды
+                interval = 1000
+                fastestInterval = 500
                 priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                smallestDisplacement = 0f // Получать все обновления
+                smallestDisplacement = 0f
                 isWaitForAccurateLocation = false
             }
         }
@@ -129,6 +129,6 @@ class LocationService : Service() {
     }
 
     companion object {
-        val BROADCAST_ACTION = "ACTION"
+        const val BROADCAST_ACTION = "ACTION"
     }
 }
