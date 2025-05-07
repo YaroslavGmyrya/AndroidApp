@@ -59,10 +59,8 @@ class LocationService : Service() {
             .setCategory(Notification.CATEGORY_SERVICE)
             .setOngoing(true)
             .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    setChannelId(CHANNEL_ID)
-                    setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
-                }
+                setChannelId(CHANNEL_ID)
+                setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
             }
             .build()
 
