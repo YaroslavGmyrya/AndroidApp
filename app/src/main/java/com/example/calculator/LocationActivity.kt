@@ -137,6 +137,7 @@ class LocationActivity : AppCompatActivity() {
         4 to "Great"
     )
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         //set API key from Yandex
         MapKitFactory.setApiKey("8f06c755-f950-4726-a6e0-0a39a2ab4b33")
@@ -307,36 +308,6 @@ class LocationActivity : AppCompatActivity() {
         tvSignalLvl.text = signal_lvl
         tvSignalType.text = network_type
 
-        //create current_point
-        val tmpPoint = Point(location.latitude, location.longitude)
-
-        //add current point to points
-        points.add(tmpPoint)
-
-        //get current color
-        val currentColor = when(signal_lvl) {
-            "Great" -> ContextCompat.getColor(this, R.color.my_green)
-            "Good" -> ContextCompat.getColor(this, R.color.my_yellow)
-            "No good" -> ContextCompat.getColor(this, R.color.my_orange)
-            "Bad" -> ContextCompat.getColor(this, R.color.my_red)
-            else -> ContextCompat.getColor(this, R.color.my_black)
-        }
-
-        //set color for SignalLvl
-        tvSignalLvl.setTextColor(currentColor)
-
-        //if invalid value - set red text
-        if(location.speed <= 0.5f || location.accuracy >= 10f){
-            if(location.speed <= 0.5f)
-                tvSpd.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.my_red))
-            else
-                tvAcc.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.my_red))
-            return
-        }
-        //if valid value - set default (black) text
-        tvSpd.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.black))
-        tvAcc.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.black))
-
         // create object info
         val tmp = info(
             latitude = location.latitude,
@@ -357,6 +328,40 @@ class LocationActivity : AppCompatActivity() {
 
         //add to file
         file.appendText(gson.toJson(tmp))
+
+        //create current_point
+        val tmpPoint = Point(location.latitude, location.longitude)
+
+        //add current point to points
+        points.add(tmpPoint)
+
+        //get current color
+        val currentColor = when(signal_lvl) {
+            "Great" -> ContextCompat.getColor(this, R.color.my_green)
+            "Good" -> ContextCompat.getColor(this, R.color.my_yellow)
+            "No good" -> ContextCompat.getColor(this, R.color.my_orange)
+            "Bad" -> ContextCompat.getColor(this, R.color.my_red)
+            else -> ContextCompat.getColor(this, R.color.my_black)
+        }
+
+        //set color for SignalLvl
+        tvSignalLvl.setTextColor(currentColor)
+
+        //if invalid value - set red text
+        if (location.speed <= 0.5f || location.accuracy >= 10f) {
+            if (location.speed <= 0.5f) {
+                tvSpd.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.my_red))
+            }
+            if (location.accuracy >= 10f) {
+                tvAcc.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.my_red))
+            }
+            return
+        }
+
+        //if valid value - set default (black) text
+        tvSpd.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.black))
+        tvAcc.setTextColor(ContextCompat.getColor(this@LocationActivity, R.color.black))
+
 
         //build line
         if (points.size >= 2) {
@@ -406,7 +411,8 @@ class LocationActivity : AppCompatActivity() {
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_PHONE_STATE,),
                     PERMISSION_REQUEST_FOREGROUND_LOCATION
