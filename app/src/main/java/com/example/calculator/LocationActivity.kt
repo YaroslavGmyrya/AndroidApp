@@ -123,6 +123,7 @@ class LocationActivity : AppCompatActivity() {
     )
 
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         //set API key from Yandex
@@ -166,8 +167,7 @@ class LocationActivity : AppCompatActivity() {
         locationService = Intent(this, LocationService::class.java)
 
         //register receiver
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(locationReceiver, IntentFilter(LocationService.BROADCAST_ACTION))
+        registerReceiver(locationReceiver, IntentFilter(LocationService.BROADCAST_ACTION))
 
     }
 
