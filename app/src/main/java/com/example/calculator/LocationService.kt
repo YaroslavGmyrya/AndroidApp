@@ -1,9 +1,12 @@
 package com.example.calculator
+import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.location.Location
+import android.os.Build
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
@@ -46,24 +49,41 @@ class LocationService : Service() {
         manager.createNotificationChannel(channel)
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private fun startForegroundService() {
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("GPS Tracker")
-            .setContentText("Tracking your location")
+            .setContentText("Track your location")
             .setSmallIcon(R.drawable.location)
             .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .setOngoing(true)
+            .apply {
+                setChannelId(CHANNEL_ID)
+                setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
+            }
             .build()
+
         startForeground(NOTIFICATION_ID, notification)
     }
 
     private fun createLocationRequest() {
-        locationRequest = LocationRequest.create().apply {
-            interval = 0
-            fastestInterval = 0
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            smallestDisplacement = 0.3f
-            maxWaitTime = 0
-            isWaitForAccurateLocation = true
+        locationRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            LocationRequest.Builder(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                1000
+            ).apply {
+                setMinUpdateIntervalMillis(500)
+                setWaitForAccurateLocation(false)
+            }.build()
+        } else {
+            LocationRequest.create().apply {
+                interval = 1000
+                fastestInterval = 500
+                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                smallestDisplacement = 0.3f
+                isWaitForAccurateLocation = false
+            }
         }
     }
 
@@ -71,7 +91,7 @@ class LocationService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let { location ->
-                    Log.w(LOG_TAG, "SEND LOCATION TO ACTIVITY")
+                    Log.w(LOG_TAG, location.toString())
                     sendLocationToActivity(location)
                 }
             }
@@ -96,9 +116,10 @@ class LocationService : Service() {
         val intent = Intent(BROADCAST_ACTION).apply {
             putExtra("location", location)
             addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+            setPackage(packageName)
 
         }
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+        sendBroadcast(intent)
     }
 
     override fun onDestroy() {
@@ -108,6 +129,6 @@ class LocationService : Service() {
     }
 
     companion object {
-        val BROADCAST_ACTION = "ACTION"
+        const val BROADCAST_ACTION = "ACTION"
     }
 }

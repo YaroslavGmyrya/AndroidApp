@@ -159,8 +159,6 @@ class LocationActivity : AppCompatActivity() {
         //clear file with prev info about location
         file.writeText("")
 
-        file.writeText("sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
-
         //service for get info about signal
         TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
@@ -367,11 +365,7 @@ class LocationActivity : AppCompatActivity() {
         when (requestCode) {
             PERMISSION_REQUEST_FOREGROUND_LOCATION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         requestPermissions()
-                    } else {
-                        startForegroundService(locationService)
-                    }
                 }
             }
             PERMISSION_REQUEST_BACKGROUND_LOCATION -> {
