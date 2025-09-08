@@ -22,6 +22,7 @@ import android.os.Environment
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
+import android.util.Printer
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
@@ -33,7 +34,19 @@ import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.geometry.Polyline
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.PolylineMapObject
+import com.yandex.runtime.Runtime.init
+import com.yandex.runtime.recovery.CrashHandler.init
 import java.io.File
+
+//for socket
+
+import java.net.Socket
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.IOException
+import java.io.InputStreamReader
+import java.io.PrintWriter
+import java.io.Writer
 
 class LocationActivity : AppCompatActivity() {
 
@@ -75,6 +88,12 @@ class LocationActivity : AppCompatActivity() {
 
     //my service
     private lateinit var locationService : Intent
+
+    //socket
+    private lateinit var socket: Socket
+    private lateinit var writer: PrintWriter
+    private lateinit var reader: BufferedReader
+
 
     //all info
     data class info(
@@ -122,6 +141,43 @@ class LocationActivity : AppCompatActivity() {
         4 to "Great"
     )
 
+    class SocketClient() {
+        private lateinit var socket: Socket
+        private lateinit var reader: BufferedReader
+        private lateinit var writer: PrintWriter
+        @Volatile private var connected = false
+
+        fun start(host: String, port: Int) {
+            Thread {
+                try {
+                    socket = Socket(host, port)
+                    reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+                    writer = PrintWriter(socket.getOutputStream(), true)
+                    connected = true
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }.start()
+        }
+
+        fun send(message: String) {
+            if (connected && ::writer.isInitialized) {
+                Thread { writer.println(message) }.start()
+            }
+        }
+
+        fun stop_socket() {
+            connected = false
+            if (::reader.isInitialized) reader.close()
+            if (::writer.isInitialized) writer.close()
+            if (::socket.isInitialized) socket.close()
+        }
+    }
+
+    private val client = SocketClient()
+
+
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -155,7 +211,7 @@ class LocationActivity : AppCompatActivity() {
         tvSignalType = findViewById(R.id.tv_signalType)
 
         //file
-        file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "info.txt")
+        file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "location_info.txt")
 
         //clear file with prev info about location
         file.writeText("")
@@ -169,6 +225,8 @@ class LocationActivity : AppCompatActivity() {
         //register receiver
         registerReceiver(locationReceiver, IntentFilter(LocationService.BROADCAST_ACTION))
 
+        //socket
+        client.start("192.168.1.104", 5000)
     }
 
     //start lifecycle mapkit, update location, location service
@@ -273,6 +331,9 @@ class LocationActivity : AppCompatActivity() {
 
         //add to file
         file.appendText(gson.toJson(tmp))
+
+        //send data to python server
+        client.send(gson.toJson((tmp)))
 
         //create current_point
         val tmpPoint = Point(location.latitude, location.longitude)
