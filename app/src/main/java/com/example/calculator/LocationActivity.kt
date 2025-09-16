@@ -220,7 +220,7 @@ class LocationActivity : AppCompatActivity() {
         registerReceiver(locationReceiver, IntentFilter(LocationService.BROADCAST_ACTION))
 
         //socket
-        client.start("10.167.155.212", 5000)
+        client.start("192.168.1.104", 5000)
     }
 
     //start lifecycle mapkit, update location, location service
