@@ -89,12 +89,6 @@ class LocationActivity : AppCompatActivity() {
     //my service
     private lateinit var locationService : Intent
 
-    //socket
-    private lateinit var socket: Socket
-    private lateinit var writer: PrintWriter
-    private lateinit var reader: BufferedReader
-
-
     //all info
     data class info(
         val latitude: Double,
