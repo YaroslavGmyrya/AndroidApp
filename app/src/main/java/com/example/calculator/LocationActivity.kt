@@ -41,6 +41,14 @@ import java.io.File
 
 import com.example.calculator.LocationService
 
+import java.net.Socket
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.IOException
+import java.io.InputStreamReader
+import java.io.PrintWriter
+import java.io.Writer
+
 class LocationActivity : AppCompatActivity() {
 
     val value: Int = 0
@@ -137,6 +145,42 @@ class LocationActivity : AppCompatActivity() {
         4 to "Great"
     )
 
+    class SocketClient() {
+        private lateinit var socket: Socket
+        private lateinit var reader: BufferedReader
+        private lateinit var writer: PrintWriter
+        @Volatile private var connected = false
+
+        fun start(host: String, port: Int) {
+            Thread {
+                try {
+                    socket = Socket(host, port)
+                    reader = BufferedReader(InputStreamReader(socket.getInputStream()))
+                    writer = PrintWriter(socket.getOutputStream(), true)
+                    connected = true
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }.start()
+        }
+
+        fun send(message: String) {
+            if (connected && ::writer.isInitialized) {
+                Thread { writer.println(message) }.start()
+            }
+        }
+
+        fun stop_socket() {
+            connected = false
+            if (::reader.isInitialized) reader.close()
+            if (::writer.isInitialized) writer.close()
+            if (::socket.isInitialized) socket.close()
+        }
+    }
+
+    private val client = SocketClient()
+
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
         //set API key from Yandex
@@ -166,7 +210,7 @@ class LocationActivity : AppCompatActivity() {
         tvSignalLvl = findViewById(R.id.SignalLvl)
         tvSignalType = findViewById(R.id.tv_signalType)
 
-        file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "info.txt")
+        file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "location_info.txt")
 
         //clear file with prev info about location
         file.writeText("")
@@ -183,6 +227,10 @@ class LocationActivity : AppCompatActivity() {
 
         createLocationRequest()
         createLocationCallback()
+
+        //socket
+        client.start("192.168.1.104", 5000)
+
 
     }
 
@@ -328,6 +376,9 @@ class LocationActivity : AppCompatActivity() {
 
         //add to file
         file.appendText(gson.toJson(tmp))
+
+        //send to server
+        client.send(gson.toJson((tmp)))
 
         //create current_point
         val tmpPoint = Point(location.latitude, location.longitude)
