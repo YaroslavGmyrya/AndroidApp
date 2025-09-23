@@ -1,0 +1,3 @@
+[submodule "Android_backend"]
+	path = Android_backend
+	url = https://github.com/YaroslavGmyrya/Android_backend
