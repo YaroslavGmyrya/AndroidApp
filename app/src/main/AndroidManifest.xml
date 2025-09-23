@@ -31,22 +31,22 @@
         android:theme="@style/Theme.Calculator"
         tools:targetApi="31">
         <service
-            android:name=".LocationService"
+            android:name=".service.LocationService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="location"></service>
 
         <activity
-            android:name=".LocationActivity"
+            android:name=".location.LocationActivity"
             android:exported="false" />
         <activity
-            android:name=".CalculatorActivity"
+            android:name=".calculator.CalculatorActivity"
             android:exported="false" />
         <activity
-            android:name=".PlayerActivity"
+            android:name=".audio_player.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".menu.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

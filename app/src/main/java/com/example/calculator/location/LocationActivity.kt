@@ -1,4 +1,4 @@
-package com.example.calculator
+package com.example.calculator.location
 
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.mapview.MapView
@@ -18,17 +18,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.location.Location
 import android.location.LocationManager
-import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import com.google.gson.GsonBuilder
 import com.yandex.mapkit.Animation
@@ -39,15 +35,13 @@ import com.yandex.mapkit.map.PolylineMapObject
 
 import java.io.File
 
-import com.example.calculator.LocationService
+import com.example.calculator.service.LocationService
+import com.example.calculator.R
 
 import java.net.Socket
 import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.IOException
 import java.io.InputStreamReader
 import java.io.PrintWriter
-import java.io.Writer
 
 class LocationActivity : AppCompatActivity() {
 
@@ -55,7 +49,6 @@ class LocationActivity : AppCompatActivity() {
     val LOG_TAG: String = "LOCATION_ACTIVITY"
 
     companion object {
-        private const val PERMISSION_REQUEST_ACCESS_LOCATION = 100
         private const val PERMISSION_REQUEST_FOREGROUND_LOCATION = 100
         private const val PERMISSION_REQUEST_BACKGROUND_LOCATION = 101
     }
@@ -99,87 +92,9 @@ class LocationActivity : AppCompatActivity() {
     //other
     private var isForeground : Boolean = true
 
-    //class location info
-    data class info(
-        val latitude: Double,
-        val longitude: Double,
-        val altitude: Double,
-        val accuracy: Float,
-        val speed: Float,
-        val time: Long,
-        val net_type: String? = null,
-        val signal_lvl: String? = null
-    )
+    //client
+    private lateinit var client : my_client
 
-    //map for translate code networkType to string
-    val networkType = mapOf(
-        0 to "undefined",
-        1 to "2G (GPRS)",
-        2 to "2G (EDGE)",
-        3 to "3G (UMTS)",
-        4 to "2G (CDMA)",
-        5 to "3G (EV-DO)",
-        6 to "3G (EV-DO)",
-        7 to "2G (1xRTT)",
-        8 to "3G (HSDPA)",
-        9 to "3G (HSUPA)",
-        10 to "3G (HSPA)",
-        11 to "2G (iDEN)",
-        12 to "3G (EV-DO)",
-        13 to "4G (LTE)",
-        14 to "3G (eHRPD)",
-        15 to "3G (HSPA+)",
-        16 to "2G (GSM)",
-        17 to "3G (TD-SCDMA)",
-        18 to "Wi-Fi",
-        19 to "4G+",
-        20 to "5G"
-    )
-
-    //map for translate code signal lvl to string
-    val signal_level = mapOf(
-        0 to "No signal",
-        1 to "Bad",
-        2 to "No good",
-        3 to "Good",
-        4 to "Great"
-    )
-
-    class SocketClient() {
-        private lateinit var socket: Socket
-        private lateinit var reader: BufferedReader
-        private lateinit var writer: PrintWriter
-        @Volatile private var connected = false
-
-        fun start(host: String, port: Int) {
-            Thread {
-                try {
-                    socket = Socket(host, port)
-                    reader = BufferedReader(InputStreamReader(socket.getInputStream()))
-                    writer = PrintWriter(socket.getOutputStream(), true)
-                    connected = true
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }.start()
-        }
-
-        fun send(message: String) {
-            if (connected && ::writer.isInitialized) {
-                Thread { writer.println(message) }.start()
-            }
-        }
-
-        fun stop_socket() {
-            connected = false
-            if (::reader.isInitialized) reader.close()
-            if (::writer.isInitialized) writer.close()
-            if (::socket.isInitialized) socket.close()
-        }
-    }
-
-    private val client = SocketClient()
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -224,12 +139,14 @@ class LocationActivity : AppCompatActivity() {
 
         registerReceiver(locationReceiver, IntentFilter(LocationService.BROADCAST_ACTION))
 
-
         createLocationRequest()
         createLocationCallback()
 
+        //create client
+        client = my_client()
+
         //socket
-        client.start("192.168.1.104", 5000)
+        client.start("192.168.1.104", 3500)
 
 
     }
@@ -265,6 +182,7 @@ class LocationActivity : AppCompatActivity() {
         mapView.onStop()
         MapKitFactory.getInstance().onStop()
         stopService(locationService)
+        client.stop()
     }
 
     //check permission and start updates

@@ -1,33 +1,16 @@
-package com.example.calculator
+package com.example.calculator.menu
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_MEDIA_IMAGES
-import android.content.Context
 import android.content.Intent
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import java.io.File
-import kotlin.system.exitProcess
-import android.Manifest
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.content.pm.PackageManager
-import com.example.calculator.LocationActivity
+import com.example.calculator.audio_player.PlayerActivity
+import com.example.calculator.R
+import com.example.calculator.calculator.CalculatorActivity
+import com.example.calculator.location.LocationActivity
 
 
 class MainActivity : AppCompatActivity() {

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:maxWidth="1080dp"
     android:maxHeight="2400dp"
-    tools:context=".MainActivity">
+    tools:context=".menu.MainActivity">
 
     <ImageButton
         android:id="@+id/HopToLocation"

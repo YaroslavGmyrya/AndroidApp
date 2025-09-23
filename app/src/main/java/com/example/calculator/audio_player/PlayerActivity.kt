@@ -1,4 +1,4 @@
-package com.example.calculator
+package com.example.calculator.audio_player
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.calculator.R
 import java.io.File
 import java.util.Timer
 import java.util.TimerTask

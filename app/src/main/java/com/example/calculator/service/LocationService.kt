@@ -1,4 +1,4 @@
-package com.example.calculator
+package com.example.calculator.service
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
@@ -11,7 +11,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.calculator.R
 import com.google.android.gms.location.*
 
 class LocationService : Service() {
