@@ -1,15 +1,51 @@
 package com.example.calculator.location
 
-//class location info
+//class location and network info
 data class info(
+
+    //location info
     val latitude: Double,
     val longitude: Double,
     val altitude: Double,
     val accuracy: Float,
     val speed: Float,
     val time: Long,
+
+    //network
+
+    //Lte info
     val net_type: String? = null,
-    val signal_lvl: String? = null
+    val signal_lvl: String? = null,
+    val band : IntArray?,
+    val earfcn : Int?,
+    val mcc : String? = null,
+    val mnc : String? = null,
+    val pci : Int?,
+    val tac : Int?,
+    val bandwidth : Int?,
+    val operator : String? = null,
+
+    val asu_level : Int?,
+    val cqi : Int?,
+    val rsrp : Int?,
+    val rsrq : Int?,
+    val rssi : Int?,
+    val rssnr : Int?,
+    val timing_advance : Int?,
+
+    //GSM info
+    val bsic : Int?,
+    val arfcn : Int?,
+    val lac : Int?,
+    val mcc_gsm : String? = null,
+    val mnc_gsm : String? = null,
+    val psc : Int?,
+    val dbm : Int?,
+    val rssi_gsm : Int?,
+    val timing_advance_gsm : Int?,
+    val ber : Int?,
+    val asu_level_gsm: Int?,
+
 )
 
 //map for translate code networkType to string

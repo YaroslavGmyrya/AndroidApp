@@ -18,11 +18,22 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Environment
 import android.provider.Settings
+import android.telephony.CellIdentity
+import android.telephony.CellIdentityGsm
+import android.telephony.CellIdentityLte
+import android.telephony.CellInfo
+import android.telephony.CellInfoGsm
+import android.telephony.CellInfoLte
+import android.telephony.CellSignalStrength
+import android.telephony.CellSignalStrengthGsm
+import android.telephony.CellSignalStrengthLte
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
@@ -231,6 +242,7 @@ class LocationActivity : AppCompatActivity() {
     //update location
     private fun createLocationCallback() {
         locationCallback = object : LocationCallback() {
+            @RequiresApi(Build.VERSION_CODES.R)
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let { location ->
                     updateLocation(location)
@@ -243,6 +255,7 @@ class LocationActivity : AppCompatActivity() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     private fun updateLocation(location: Location) {
         //move camera om first point
@@ -264,6 +277,16 @@ class LocationActivity : AppCompatActivity() {
         //get signal_lvl
         val signal_lvl = signal_level.get(TelephonyManager.signalStrength?.level)
 
+        val allCells = TelephonyManager.allCellInfo ?: emptyList()
+
+        val lteCell = allCells.filterIsInstance<CellInfoLte>().firstOrNull()
+        val lteIdentity = lteCell?.cellIdentity
+        val lteSignal = lteCell?.cellSignalStrength
+
+        val gsmCell = allCells.filterIsInstance<CellInfoGsm>().firstOrNull()
+        val gsmIdentity = gsmCell?.cellIdentity
+        val gsmSignal = gsmCell?.cellSignalStrength
+
         // update output info
         tvLat.text = location.latitude.toString()
         tvLon.text = location.longitude.toString()
@@ -274,16 +297,48 @@ class LocationActivity : AppCompatActivity() {
         tvSignalLvl.text = signal_lvl
         tvSignalType.text = network_type
 
-        // create object info
+        // create object info safely
         val tmp = info(
+            // location info
             latitude = location.latitude,
             longitude = location.longitude,
             altitude = location.altitude,
             accuracy = location.accuracy,
             speed = location.speed,
             time = location.time,
+
+            // network info
             net_type = network_type,
-            signal_lvl = signal_lvl
+            signal_lvl = signal_lvl,
+
+            // LTE
+            band = lteIdentity?.bands,
+            earfcn = lteIdentity?.earfcn,
+            mcc = lteIdentity?.mccString,
+            mnc = lteIdentity?.mncString,
+            pci = lteIdentity?.pci,
+            tac = lteIdentity?.tac,
+            bandwidth = lteIdentity?.bandwidth,
+            operator = lteIdentity?.operatorAlphaLong.toString(),
+            rssi = lteSignal?.rssi,
+            rssnr = lteSignal?.rssnr,
+            rsrp = lteSignal?.rsrp,
+            rsrq = lteSignal?.rsrq,
+            asu_level = lteSignal?.asuLevel,
+            cqi = lteSignal?.cqi,
+            timing_advance = lteSignal?.timingAdvance,
+
+            // GSM
+            bsic = gsmIdentity?.bsic,
+            arfcn = gsmIdentity?.arfcn,
+            lac = gsmIdentity?.lac,
+            mcc_gsm = gsmIdentity?.mccString,
+            psc = gsmIdentity?.psc,
+            dbm = gsmSignal?.dbm,
+            rssi_gsm = gsmSignal?.rssi,
+            timing_advance_gsm = gsmSignal?.timingAdvance,
+            ber = gsmSignal?.bitErrorRate,
+            asu_level_gsm = gsmSignal?.asuLevel
         )
 
         //serializing with Google Gson
@@ -294,6 +349,7 @@ class LocationActivity : AppCompatActivity() {
 
         //add to file
         file.appendText(gson.toJson(tmp))
+        file.appendText(",\n")
 
         //send to server
         client.send(gson.toJson((tmp)))
@@ -356,6 +412,7 @@ class LocationActivity : AppCompatActivity() {
 
     //receiver from service
     private val locationReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.R)
         override fun onReceive(context: Context?, intent: Intent?) {
             val location = intent?.getParcelableExtra<Location>("location")
             location?.let {
