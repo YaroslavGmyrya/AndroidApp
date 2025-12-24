@@ -48,6 +48,7 @@ import java.io.File
 
 import com.example.calculator.service.LocationService
 import com.example.calculator.R
+import kotlinx.coroutines.delay
 
 import java.net.Socket
 import java.io.BufferedReader
@@ -105,6 +106,7 @@ class LocationActivity : AppCompatActivity() {
 
     //client
     private lateinit var client : my_client
+    private var send_file = false
 
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -138,9 +140,6 @@ class LocationActivity : AppCompatActivity() {
 
         file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "location_info.txt")
 
-        //clear file with prev info about location
-        file.writeText("")
-
         //service for get info about signal
         TelephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
@@ -158,8 +157,6 @@ class LocationActivity : AppCompatActivity() {
 
         //socket
         client.start("192.168.1.104", 3500)
-
-
     }
 
     //if foreground - get location from activity
@@ -174,6 +171,7 @@ class LocationActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         if(isForeground)
             startLocationUpdates()
         else
@@ -287,6 +285,16 @@ class LocationActivity : AppCompatActivity() {
         val gsmIdentity = gsmCell?.cellIdentity
         val gsmSignal = gsmCell?.cellSignalStrength
 
+        if(send_file == false){
+            file.forEachLine { line ->
+                client.send(line)
+            }
+
+            send_file = true;
+            file.writeText("")
+        }
+
+
         // update output info
         tvLat.text = location.latitude.toString()
         tvLon.text = location.longitude.toString()
@@ -297,7 +305,7 @@ class LocationActivity : AppCompatActivity() {
         tvSignalLvl.text = signal_lvl
         tvSignalType.text = network_type
 
-        // create object info safely
+        // create object info
         val tmp = info(
             // location info
             latitude = location.latitude,
@@ -338,21 +346,22 @@ class LocationActivity : AppCompatActivity() {
             rssi_gsm = gsmSignal?.rssi,
             timing_advance_gsm = gsmSignal?.timingAdvance,
             ber = gsmSignal?.bitErrorRate,
-            asu_level_gsm = gsmSignal?.asuLevel
+            asu_level_gsm = gsmSignal?.asuLevel,
+            mnc_gsm = gsmIdentity?.mncString,
         )
 
         //serializing with Google Gson
         val gson = GsonBuilder()
             .serializeNulls()
-            .setPrettyPrinting()
             .create()
 
         //add to file
-        file.appendText(gson.toJson(tmp))
-        file.appendText(",\n")
+        file.appendText(gson.toJson(tmp) + "|||")
 
         //send to server
-        client.send(gson.toJson((tmp)))
+        client.send(gson.toJson((tmp)) + "|||")
+
+        Log.w(LOG_TAG, "Была отправка!")
 
         //create current_point
         val tmpPoint = Point(location.latitude, location.longitude)

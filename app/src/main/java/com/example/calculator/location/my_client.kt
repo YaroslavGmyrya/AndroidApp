@@ -1,6 +1,7 @@
 package com.example.calculator.location
 
 import android.util.Log
+import kotlinx.coroutines.delay
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -37,7 +38,10 @@ class my_client {
 
     fun send(message: String) {
         if (connected) {
-            Thread { writer.println(message) }.start()
+            Thread {
+                writer.println(message)
+            }.start()
+            Log.w(LOG_TAG, "Send success! size: ${message.length}")
         }
     }
 

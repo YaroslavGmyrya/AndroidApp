@@ -45,7 +45,6 @@ data class info(
     val timing_advance_gsm : Int?,
     val ber : Int?,
     val asu_level_gsm: Int?,
-
 )
 
 //map for translate code networkType to string
